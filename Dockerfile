@@ -13,7 +13,7 @@ RUN a2enmod rewrite
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf \
     && sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/apache2.conf
 
-# Copy app source code from the repo root
+# Copy entire Laravel project (your project is in root)
 WORKDIR /var/www/html
 COPY . /var/www/html/
 

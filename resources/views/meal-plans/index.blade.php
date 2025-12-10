@@ -6,9 +6,12 @@
 <style>
     .page-header {
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
+        justify-content: center;
         align-items: center;
+        gap: 16px;
         margin-bottom: 30px;
+        text-align: center;
     }
 
     .page-header h1 {
@@ -17,38 +20,56 @@
         color: var(--color-text);
     }
 
+    .page-header p {
+        color: var(--color-muted);
+    }
+
     .meal-plans-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-        gap: 24px;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        justify-items: center;
+        width: 100%;
     }
 
     .meal-plan-card {
         background: var(--color-surface);
-        border-radius: 24px;
-        padding: 26px;
-        box-shadow: 0 30px 52px rgba(79, 138, 62, 0.16);
+        border-radius: 18px;
+        padding: 22px;
+        box-shadow: 0 22px 36px rgba(79, 138, 62, 0.14);
         display: flex;
         flex-direction: column;
         border: 1px solid rgba(79, 138, 62, 0.12);
+        width: 100%;
+        max-width: 320px;
     }
 
     .meal-plan-header {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
         margin-bottom: 20px;
+        gap: 12px;
+    }
+
+    .meal-plan-header > div:first-child {
+        flex: 1;
+        min-width: 0;
     }
 
     .meal-plan-title {
         font-size: 22px;
         font-weight: 700;
         color: var(--color-text);
+        margin-bottom: 4px;
+        line-height: 1.2;
     }
 
     .meal-plan-actions {
         display: flex;
         gap: 8px;
+        flex-shrink: 0;
+        align-items: flex-start;
     }
 
     .tab-bar {
@@ -88,6 +109,7 @@
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
         gap: 12px;
+        align-items: start;
     }
 
     .meal-card {
@@ -99,6 +121,7 @@
         flex-direction: column;
         gap: 8px;
         min-height: 140px;
+        align-items: stretch;
     }
 
     .meal-card img {
@@ -106,17 +129,35 @@
         height: 90px;
         object-fit: cover;
         border-radius: 10px;
+        display: block;
+    }
+
+    .meal-card-placeholder {
+        width: 100%;
+        height: 90px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(79, 138, 62, 0.12);
+        font-size: 28px;
+        color: rgba(79, 138, 62, 0.6);
+        flex-shrink: 0;
     }
 
     .meal-card-title {
         font-size: 15px;
         font-weight: 600;
         color: var(--color-text);
+        line-height: 1.3;
+        margin: 0;
     }
 
     .meal-card-meta {
         font-size: 12px;
         color: var(--color-muted);
+        line-height: 1.4;
+        margin: 0;
     }
 
     .add-meal-card {
@@ -130,6 +171,10 @@
         color: var(--color-accent);
         font-weight: 600;
         font-size: 14px;
+        min-height: 140px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
     }
 
     .add-meal-card:hover {
@@ -167,12 +212,12 @@
             <div class="meal-plan-card">
                 <div class="meal-plan-header">
                     <div>
-                        <div class="meal-plan-title">{{ $mealPlan->name }}</div>
-                        <div style="color: #777; font-size: 13px; margin-top: 4px;">{{ $mealPlan->description ?: 'No description' }}</div>
+                        <h3 class="meal-plan-title">{{ $mealPlan->name }}</h3>
+                        <p style="color: #777; font-size: 13px; margin: 0; line-height: 1.4;">{{ $mealPlan->description ?: 'No description' }}</p>
                     </div>
                     <div class="meal-plan-actions">
                         <a href="{{ route('meal-plans.show', $mealPlan) }}" class="btn btn-secondary" style="padding: 8px 14px; font-size: 13px;">Open</a>
-                        <form action="{{ route('meal-plans.destroy', $mealPlan) }}" method="POST" onsubmit="return confirm('Delete this meal plan?');">
+                        <form action="{{ route('meal-plans.destroy', $mealPlan) }}" method="POST" onsubmit="return confirm('Delete this meal plan?');" style="margin: 0;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger" style="padding: 8px 14px; font-size: 13px;">Delete</button>
@@ -200,16 +245,18 @@
                         <div class="meal-cards">
                             @forelse($items as $item)
                                 <div class="meal-card">
-                                    @if($item->recipe && $item->recipe->image)
-                                        <img src="{{ asset('storage/' . $item->recipe->image) }}" alt="{{ $item->recipe->name }}">
+                                    @if($item->recipe && $item->recipe->image_url)
+                                        <img src="{{ $item->recipe->image_url }}" alt="{{ $item->recipe->name }}">
+                                    @else
+                                        <div class="meal-card-placeholder">🥗</div>
                                     @endif
-                                    <div class="meal-card-title">{{ $item->recipe?->name ?? 'Recipe removed' }}</div>
-                                    <div class="meal-card-meta">{{ $item->servings }} servings</div>
+                                    <h4 class="meal-card-title">{{ $item->recipe?->name ?? 'Recipe removed' }}</h4>
+                                    <p class="meal-card-meta">{{ $item->servings }} servings</p>
                                 </div>
                             @empty
                                 <div class="meal-card add-meal-card" onclick="window.location='{{ route('meal-plans.show', $mealPlan) }}'">
-                                    <div style="font-size: 24px;">＋</div>
-                                    Add meal
+                                    <span style="font-size: 24px; line-height: 1;">＋</span>
+                                    <span>Add meal</span>
                                 </div>
                             @endforelse
                         </div>

@@ -28,7 +28,7 @@ class RecipeController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048|dimensions:min_width=2000,min_height=1296',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:10240',
             'servings' => 'required|integer|min:1',
             'prep_time' => 'nullable|integer',
             'cook_time' => 'nullable|integer',
@@ -75,7 +75,7 @@ class RecipeController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048|dimensions:min_width=2000,min_height=1296',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:10240',
             'servings' => 'required|integer|min:1',
             'prep_time' => 'nullable|integer',
             'cook_time' => 'nullable|integer',
@@ -103,10 +103,14 @@ class RecipeController extends Controller
             abort(403);
         }
         
-        if ($recipe->image) {
+        if ($recipe->image && !Str::startsWith($recipe->image, ['http://', 'https://'])) {
             Storage::disk('public')->delete($recipe->image);
         }
-        
+
+        if ($recipe->mealItems()->exists()) {
+            $recipe->mealItems()->delete();
+        }
+
         $recipe->delete();
 
         return redirect()->route('recipes.index')->with('success', 'Recipe deleted successfully!');

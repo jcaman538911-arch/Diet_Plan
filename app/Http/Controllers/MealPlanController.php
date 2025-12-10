@@ -102,6 +102,26 @@ class MealPlanController extends Controller
         return back()->with('success', 'Meal added to plan!');
     }
 
+    public function updateMeal(Request $request, MealPlan $mealPlan, MealItem $mealItem)
+    {
+        if ($mealPlan->user_id !== auth()->id()) {
+            abort(403);
+        }
+        
+        if ($mealItem->meal_plan_id !== $mealPlan->id) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'recipe_id' => 'required|exists:recipes,id',
+            'servings' => 'required|integer|min:1'
+        ]);
+
+        $mealItem->update($validated);
+
+        return back()->with('success', 'Meal updated successfully!');
+    }
+
     public function removeMeal(MealPlan $mealPlan, MealItem $mealItem)
     {
         if ($mealPlan->user_id !== auth()->id()) {

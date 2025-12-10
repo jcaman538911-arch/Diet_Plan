@@ -159,14 +159,189 @@
         color: var(--color-muted);
         margin-top: 8px;
     }
+
+    .chat-assistant {
+        display: grid;
+        gap: 20px;
+    }
+
+    .chat-window {
+        border-radius: 20px;
+        border: 1px solid rgba(79, 138, 62, 0.16);
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 20px 40px rgba(79, 138, 62, 0.14);
+        padding: 22px;
+        display: grid;
+        gap: 16px;
+    }
+
+    .chat-messages {
+        display: grid;
+        gap: 14px;
+        max-height: 380px;
+        overflow-y: auto;
+        padding-right: 8px;
+    }
+
+    .chat-message {
+        display: grid;
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    .chat-message.user {
+        justify-items: end;
+    }
+
+    .chat-bubble {
+        padding: 12px 14px;
+        border-radius: 16px;
+        font-size: 14px;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        box-shadow: 0 12px 24px rgba(79, 138, 62, 0.12);
+        background: rgba(79, 138, 62, 0.08);
+        color: var(--color-text);
+        width: fit-content;
+    }
+
+    .chat-message.assistant .chat-bubble {
+        background: var(--color-surface-alt);
+        box-shadow: 0 12px 32px rgba(79, 138, 62, 0.1);
+    }
+
+    .chat-message.user .chat-bubble {
+        background: var(--color-accent);
+        color: #ffffff;
+        box-shadow: 0 12px 30px rgba(79, 138, 62, 0.24);
+    }
+
+    .chat-message.pending .chat-bubble {
+        opacity: 0.7;
+    }
+
+    .chat-message.error .chat-bubble {
+        background: rgba(220, 53, 69, 0.14);
+        color: var(--color-danger-dark);
+        box-shadow: 0 12px 30px rgba(220, 53, 69, 0.18);
+    }
+
+    .chat-status {
+        font-size: 12px;
+        color: var(--color-muted);
+    }
+
+    .chat-form {
+        display: grid;
+        gap: 12px;
+    }
+
+    .chat-input-group {
+        display: grid;
+        gap: 10px;
+    }
+
+    .chat-textarea {
+        width: 100%;
+        min-height: 80px;
+        border-radius: 14px;
+        border: 1px solid rgba(79, 138, 62, 0.18);
+        padding: 12px 14px;
+        font-size: 14px;
+        resize: vertical;
+        font-family: inherit;
+        background: rgba(255, 255, 255, 0.92);
+    }
+
+    .chat-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .chat-suggestions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .chat-suggestion {
+        padding: 6px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(79, 138, 62, 0.2);
+        background: rgba(79, 138, 62, 0.08);
+        color: var(--color-accent-dark);
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .chat-suggestion:hover {
+        background: rgba(79, 138, 62, 0.14);
+    }
+
+    .chat-submit {
+        padding: 10px 16px;
+        border-radius: 14px;
+        border: none;
+        background: var(--color-accent);
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 18px 28px rgba(79, 138, 62, 0.22);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .chat-submit:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 20px 32px rgba(79, 138, 62, 0.26);
+    }
+
+    .chat-submit:disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
+        box-shadow: none;
+        transform: none;
+    }
+
+    @media (max-width: 768px) {
+        .chat-window {
+            padding: 18px;
+        }
+
+        .chat-messages {
+            max-height: 320px;
+        }
+    }
 </style>
 @endsection
 
 @section('content')
 <div class="help-wrapper">
-    <section class="help-hero">
-        <h1>Need a hand?</h1>
-        <p>Find quick answers, tips, and ways to reach us so you can keep planning meals without interruption.</p>
+    <section class="help-section chat-assistant">
+        <div>
+            <h2>AI guidance</h2>
+            <p>Ask the Diet Plan assistant anything about recipes, meal plans, troubleshooting, or how to use the system.</p>
+        </div>
+        <div class="chat-window">
+            <div id="chatMessages" class="chat-messages"></div>
+            <div id="chatStatus" class="chat-status">Assistant typically replies within a few seconds.</div>
+            <form id="chatForm" class="chat-form" autocomplete="off">
+                <div class="chat-input-group">
+                    <textarea id="chatInput" class="chat-textarea" placeholder="Type your question..." required></textarea>
+                    <div class="chat-actions">
+                        <button type="submit" class="chat-submit">Send</button>
+                    </div>
+                </div>
+                <div class="chat-suggestions">
+                    <button type="button" class="chat-suggestion" data-chat-suggestion="How can I troubleshoot missing recipes on my dashboard?">Troubleshoot missing recipes</button>
+                    <button type="button" class="chat-suggestion" data-chat-suggestion="Guide me through creating a weekly meal plan.">Create a weekly plan</button>
+                    <button type="button" class="chat-suggestion" data-chat-suggestion="What should I do if I run into a seeding error?">Fix seeding errors</button>
+                    <button type="button" class="chat-suggestion" data-chat-suggestion="Show me how to duplicate an existing meal plan.">Duplicate meal plan</button>
+                </div>
+            </form>
+        </div>
     </section>
 
     <section class="help-section">
@@ -238,4 +413,151 @@
         </div>
     </section>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const chatMessages = document.getElementById('chatMessages');
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
+    const chatStatus = document.getElementById('chatStatus');
+    const suggestionButtons = document.querySelectorAll('[data-chat-suggestion]');
+
+    if (!chatMessages || !chatForm || !chatInput) {
+        return;
+    }
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const conversation = [
+        {
+            role: 'assistant',
+            content: 'Hey there! I\'m your Diet Plan assistant. Ask me anything about using the system, troubleshooting issues, or planning meals, and I\'ll guide you step-by-step.'
+        }
+    ];
+
+    let isSending = false;
+
+    function renderMessages() {
+        chatMessages.innerHTML = '';
+        conversation.forEach((message) => {
+            const wrapper = document.createElement('div');
+            wrapper.classList.add('chat-message', message.role);
+            if (message.pending) {
+                wrapper.classList.add('pending');
+            }
+            if (message.error) {
+                wrapper.classList.add('error');
+            }
+
+            const bubble = document.createElement('div');
+            bubble.classList.add('chat-bubble');
+            bubble.textContent = message.content;
+
+            wrapper.appendChild(bubble);
+            chatMessages.appendChild(wrapper);
+        });
+
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    async function sendMessage(prompt) {
+        if (isSending) {
+            return;
+        }
+
+        const trimmedPrompt = prompt.trim();
+        if (!trimmedPrompt) {
+            return;
+        }
+
+        const userEntry = {
+            role: 'user',
+            content: trimmedPrompt
+        };
+        conversation.push(userEntry);
+        renderMessages();
+
+        const payloadHistory = conversation.filter((message) => message !== userEntry && !message.pending);
+
+        const pendingEntry = {
+            role: 'assistant',
+            content: 'Thinking through the best answer for you…',
+            pending: true
+        };
+        conversation.push(pendingEntry);
+        renderMessages();
+
+        chatStatus.textContent = 'Assistant is typing…';
+        chatInput.value = '';
+        chatInput.focus();
+        isSending = true;
+        chatForm.classList.add('is-sending');
+
+        try {
+            const response = await fetch('{{ route('help.chat') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                    message: trimmedPrompt,
+                    history: payloadHistory,
+                }),
+            });
+
+            let data = null;
+            try {
+                data = await response.json();
+            } catch (parseError) {
+                // If the backend did not return JSON, fall back to a generic message
+            }
+
+            if (!response.ok) {
+                const backendMessage = data && data.reply ? data.reply : 'The AI service returned an unexpected error.';
+                pendingEntry.content = backendMessage;
+                pendingEntry.pending = false;
+                pendingEntry.error = true;
+                return;
+            }
+
+            pendingEntry.content = (data && data.reply) || 'I could not determine a helpful answer right now.';
+            pendingEntry.pending = false;
+            pendingEntry.error = false;
+        } catch (error) {
+            pendingEntry.content = 'I ran into an issue reaching the AI service. Please try again in a moment or contact support.';
+            pendingEntry.pending = false;
+            pendingEntry.error = true;
+        } finally {
+            renderMessages();
+            chatStatus.textContent = 'Need anything else? I\'m here to help.';
+            isSending = false;
+            chatForm.classList.remove('is-sending');
+        }
+    }
+
+    chatForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (!chatInput.value.trim()) {
+            return;
+        }
+        sendMessage(chatInput.value);
+    });
+
+    suggestionButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            if (isSending) {
+                return;
+            }
+            const prompt = button.getAttribute('data-chat-suggestion');
+            sendMessage(prompt);
+        });
+    });
+
+    renderMessages();
+});
+</script>
 @endsection

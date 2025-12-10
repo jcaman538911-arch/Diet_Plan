@@ -35,4 +35,15 @@ return [
         ],
     ],
 
+    'openai' => [
+        'api_key' => env('OPENAI_API_KEY'),
+        'model' => env('OPENAI_MODEL', 'gpt-4o-mini'),
+    ],
+
+'gemini' => [
+        'api_key' => env('GEMINI_API_KEY'),
+        // Default Gemini model (overridable via GEMINI_MODEL in .env)
+        'model' => env('GEMINI_MODEL', 'gemini-2.5-flash'),
+    ],
+
 ];

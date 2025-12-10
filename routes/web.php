@@ -3,8 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\RecipeController;
+use App\Http\Controllers\HelpChatController;
 use App\Http\Controllers\MealPlanController;
+use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\SettingsController;
 
 // Public landing pages
@@ -32,9 +33,14 @@ Route::middleware('auth')->group(function () {
     Route::resource('recipes', RecipeController::class);
     
     Route::resource('meal-plans', MealPlanController::class);
+    
+    // Tools
+    Route::view('/bmi', 'tools.bmi')->name('bmi');
     Route::post('/meal-plans/{mealPlan}/add-meal', [MealPlanController::class, 'addMeal'])->name('meal-plans.add-meal');
+    Route::put('/meal-plans/{mealPlan}/meal-items/{mealItem}', [MealPlanController::class, 'updateMeal'])->name('meal-plans.update-meal');
     Route::delete('/meal-plans/{mealPlan}/meal-items/{mealItem}', [MealPlanController::class, 'removeMeal'])->name('meal-plans.remove-meal');
 
     Route::view('/help', 'help')->name('help');
+    Route::post('/help/chat', HelpChatController::class)->name('help.chat');
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 });

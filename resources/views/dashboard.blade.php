@@ -101,6 +101,8 @@
 
     .stat-details .number {
         font-size: 36px;
+    }
+
     .section-header {
         display: flex;
         flex-wrap: wrap;
@@ -301,27 +303,103 @@
 
     <section class="stats-grid">
         <div class="stat-card">
-            <div class="stat-icon">🍲</div>
-            <div class="stat-details">
-                <h3>Total Recipes</h3>
-                <div class="number">{{ $recipesCount }}</div>
+            <h3>Total Recipes</h3>
+            <div class="stat-content">
+                <p class="stat-number">{{ $recipesCount }}</p>
+                <div class="stat-icon">🍲</div>
             </div>
         </div>
+
         <div class="stat-card">
-            <div class="stat-icon">🗂️</div>
-            <div class="stat-details">
-                <h3>Meal Plans</h3>
-                <div class="number">{{ $mealPlansCount }}</div>
+            <h3>Meal Plans</h3>
+            <div class="stat-content">
+                <p class="stat-number">{{ $mealPlansCount }}</p>
+                <div class="stat-icon">🗂️</div>
             </div>
         </div>
+
         <div class="stat-card">
-            <div class="stat-icon">🕒</div>
-            <div class="stat-details">
-                <h3>New This Week</h3>
-                <div class="number">{{ $recentRecipes->count() }}</div>
+            <h3>New This Week</h3>
+            <div class="stat-content">
+                <p class="stat-number">{{ $recentRecipes->count() }}</p>
+                <div class="stat-icon">🕒</div>
             </div>
         </div>
     </section>
+
+    <style>
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+
+    .stat-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 12px rgba(0,0,0,0.1);
+    }
+
+    .stat-card h3 {
+        font-size: 1rem;
+        color: #666;
+        margin: 0 0 1rem 0;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .stat-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1rem;
+        padding: 0 1rem;
+    }
+    
+    .stat-icon {
+        font-size: 2.2rem;
+        color: #4a90e2;
+        margin: 0;
+        display: flex;
+        align-items: flex-end;
+        margin-left: auto;
+    }
+
+    .stat-number {
+        font-size: 2.4rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+        line-height: 1;
+        margin-right: auto;
+    }
+
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .stat-card {
+            padding: 1.5rem 1rem;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+        }
+    }
+    </style>
 
     <section>
         <div class="section-header" style="margin-bottom: 20px;">
@@ -347,6 +425,12 @@
                             <div class="recipe-title">{{ $recipe->name }}</div>
                             <div class="recipe-meta">
                                 {{ $recipe->servings }} servings • {{ ucfirst($recipe->category) }} • {{ $recipe->calories }} kcal
+                            </div>
+                            @if($recipe->description)
+                                <div class="recipe-description">{{ \Illuminate\Support\Str::limit($recipe->description, 90) }}</div>
+                            @endif
+                            <div class="recipe-meta">
+                                Added {{ optional($recipe->created_at)->diffForHumans() ?? 'recently' }}
                             </div>
                             <div class="recipe-actions">
                                 <a href="{{ route('recipes.show', $recipe) }}">View</a>

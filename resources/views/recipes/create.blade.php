@@ -137,7 +137,7 @@
             <div class="form-group">
                 <label for="image">Recipe image</label>
                 <input type="file" id="image" name="image" accept="image/*">
-                <small style="color: var(--color-muted); font-size: 12px;">Upload JPG/PNG/GIF up to 2&nbsp;MB with minimum 2000×1296 resolution for best results.</small>
+                <small style="color: var(--color-muted); font-size: 12px;">Upload JPG/PNG/GIF/WebP up to 10&nbsp;MB. Images are automatically resized to fit.</small>
             </div>
         </div>
 
